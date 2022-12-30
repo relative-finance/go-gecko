@@ -288,6 +288,32 @@ func (c *Client) CoinsIDMarketChart(id string, vs_currency string, days string) 
 	return &m, nil
 }
 
+// CoinsIDMarketChartRange /coins/{id}/market_chart/range?vs_currency={usd, eur, jpy, etc.}&from&to
+func (c *Client) CoinsIDMarketChartRange(id string, vs_currency string, from string, to string) (*types.CoinsIDMarketChart, error) {
+	if len(id) == 0 || len(vs_currency) == 0 || len(from) == 0 || len(to) == 0 {
+		return nil, fmt.Errorf("id, vs_currency, from and to is required")
+	}
+
+	params := url.Values{}
+	params.Add("vs_currency", vs_currency)
+	params.Add("from", from)
+	params.Add("to", to)
+
+	url := fmt.Sprintf("%s/coins/%s/market_chart/range?%s", baseURL, id, params.Encode())
+	resp, err := c.MakeReq(url)
+	if err != nil {
+		return nil, err
+	}
+
+	m := types.CoinsIDMarketChart{}
+	err = json.Unmarshal(resp, &m)
+	if err != nil {
+		return &m, err
+	}
+
+	return &m, nil
+}
+
 // CoinsIDStatusUpdates
 
 // CoinsIDContractAddress https://api.coingecko.com/api/v3/coins/{id}/contract/{contract_address}
